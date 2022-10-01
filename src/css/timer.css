@@ -1,0 +1,33 @@
+.container {
+  width: 800px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.form {
+  display: flex;
+  justify-content: center;
+}
+.input {
+  margin-right: 10px;
+}
+.timer {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+}
+.field:not(:last-child) {
+  margin-right: 20px;
+}
+.value {
+  text-align: center;
+  font-size: 36px;
+}
+.label {
+  text-align: center;
+  font-size: 30px;
+}
