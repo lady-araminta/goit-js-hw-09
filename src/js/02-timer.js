@@ -19,8 +19,8 @@ const calendar = flatpickr(inputRef, {
     console.log(selectedDates[0]);
     deadline = selectedDates[0];
     const timeNow = Date.now();
-    const ms = deadline - timeNow;
-    if (ms <= 0) {
+    const delta = deadline - timeNow;
+    if (delta <= 0) {
       Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       startRef.disabled = false;
@@ -28,53 +28,44 @@ const calendar = flatpickr(inputRef, {
   },
 });
 
-// const timerRef = document.querySelector('.timer');
+startRef.addEventListener('click', startTimer);
 
-// const TIMER_DEDLINE = new Date(2022, 08, 29, 21, 00);
-// const timer = {
-//   intervalId: null,
-//   refs: {},
-//   start(rootSelector, deadline) {
-//     const ms = deadline.getTime() - Date.now();
-//     if (ms <= 0) {
-//       Notiflix.Notify.failure('Please choose a date in the future!');
-//       return;
-//     }
-//     Notiflix.Notify.success('Time go!');
-//     this.intervalId = setInterval(() => {
-//       const ms = deadline.getTime() - Date.now();
-//       const data = this.convertMs(ms);
-//       this.refs.days.textContent = data.days;
-//       this.refs.hours.textContent = data.hours;
-//       this.refs.minutes.textContent = data.minutes;
-//       this.refs.seconds.textContent = data.seconds;
-//     }, 1000);
-//     this.getRefs(rootSelector);
-//   },
-//   getRefs(rootSelector) {
-//     this.refs.days = rootSelector.querySelector('[data-days]');
-//     this.refs.hours = rootSelector.querySelector('[data-hours]');
-//     this.refs.minutes = rootSelector.querySelector('[data-minutes]');
-//     this.refs.seconds = rootSelector.querySelector('[data-seconds]');
-//   },
-//   convertMs(ms) {
-//     // Number of milliseconds per unit of time
-//     const second = 1000;
-//     const minute = second * 60;
-//     const hour = minute * 60;
-//     const day = hour * 24;
+function startTimer() {
+  const timerId = setInterval(() => {
+    const dateNow = Date.now();
+    const delta = deadline - dateNow;
+    if (delta <= 0) {
+      Notiflix.Notify.success('Countdown is over!');
+      clearInterval(timerId);
+      return;
+    }
+    const finalValue = convertMs(delta);
+    daysRef.textContent = addLeadingZero(finalValue.days);
+    hoursRef.textContent = addLeadingZero(finalValue.hours);
+    minutesRef.textContent = addLeadingZero(finalValue.minutes);
+    secondsRef.textContent = addLeadingZero(finalValue.seconds);
+  }, 1000);
+}
 
-//     // Remaining days
-//     const days = Math.floor(ms / day);
-//     // Remaining hours
-//     const hours = Math.floor((ms % day) / hour);
-//     // Remaining minutes
-//     const minutes = Math.floor(((ms % day) % hour) / minute);
-//     // Remaining seconds
-//     const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+function convertMs(ms) {
+  // Number of milliseconds per unit of time
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
 
-//     return { days, hours, minutes, seconds };
-//   },
-// };
+  // Remaining days
+  const days = Math.floor(ms / day);
+  // Remaining hours
+  const hours = Math.floor((ms % day) / hour);
+  // Remaining minutes
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  // Remaining seconds
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
-// timer.start(timerRef, TIMER_DEDLINE);
+  return { days, hours, minutes, seconds };
+}
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
